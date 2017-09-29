@@ -3,12 +3,14 @@ Description
 
 Spring Security is a great solution.
 But it's very tricky to deal with it.
+
 Especially, it is more difficult for issues such as user sessions handling.
 
 This project has implemented Remember-Me implementation provided by Spring Security.
+
 (Both with form login and ajax login)
 
-Also used Redis to implement custom persist token management.
+Also used `Redis` to implement custom persist token management.
 
 The interesting thing is that even if you restart the `WAS(like as tomcat)`,
 the user information is saved and is not affected by the login.
