@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "security.url.login",
+    "type": "java.lang.String",
+    "description": "security url for login"
+  },
+  {
+    "name": "security.url.logout",
+    "type": "java.lang.String",
+    "description": "security url for logout"
+  },
+  {
+    "name": "security.url.mypage",
+    "type": "java.lang.String",
+    "description": "security url for user mypage"
+  }
+]}

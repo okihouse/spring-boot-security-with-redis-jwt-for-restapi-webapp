@@ -1,0 +1,25 @@
+---
+logging:
+  config: classpath:logback.xml
+
+server:
+  port: 8080
+  context-path: /
+  error:
+    whitelabel:
+      enabled: false    
+      
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/
+      suffix: .jsp
+  redis:
+    host: localhost
+    port: 6379
+    
+security:
+  url: 
+    login: /login
+    logout: /logout
+    mypage: /mypage
