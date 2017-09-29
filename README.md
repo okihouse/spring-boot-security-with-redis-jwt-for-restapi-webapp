@@ -7,7 +7,6 @@ But it's very tricky to deal with it.
 Especially, it is more difficult for issues such as user sessions handling.
 
 This project has implemented Remember-Me implementation provided by Spring Security.
-
 (Both with form login and ajax login)
 
 Also used `Redis` to implement custom persist token management.
