@@ -22,6 +22,11 @@ Requirements
 * [Spring boot](http://projects.spring.io/spring-boot/) 1.2.8+ (spring-boot-starter-redis)
 * [Redis](http://redis.io/) 2.4+
 
+Watch Out!
+=====
+
+* Update host and port in `application.yml` for `Redis`.
+
 Run
 ===
 
