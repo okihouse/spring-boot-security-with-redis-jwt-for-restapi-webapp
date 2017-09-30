@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/okihouse/spring-boot-security-with-redis.svg?branch=master)](https://travis-ci.org/okihouse/spring-boot-security-with-redis)
+
 Description
 =========
 
