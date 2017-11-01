@@ -47,7 +47,7 @@ public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationPro
 
         String username = request.getParameter("username");
         if (StringUtils.isBlank(username)) {
-            throw new AuthenticationServiceException("Login information is not provided");
+            throw new AuthenticationServiceException("Username(ID) is not valid.");
         }
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null);
         return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);

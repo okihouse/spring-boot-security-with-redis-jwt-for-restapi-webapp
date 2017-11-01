@@ -183,7 +183,6 @@
 				},
 				ajaxLogin: function(e){
 					e.preventDefault();
-					console.log($('.form-signin').serialize());
 					$.ajax({
 						url : '/loginProcess',
 						data : $('.form-signin').serialize(),
@@ -191,11 +190,19 @@
 						dataType : 'json',
 						beforeSend : function(xhr) {
 							xhr.setRequestHeader("Accept", "application/json");
-						}
-					}).done(function(responseData) {
-						alert('Ajax Login is succeed.');
-						location.href = responseData.redirect;
-					});
+						},
+						success : function(result){
+							if(!result.success) {
+								alert(result.error);
+								return;
+							}
+							alert('Ajax Login is succeed.');
+							location.href = result.redirect;
+			            },
+			            error : function(error){
+			                alert(error);
+			            }
+		            });
 				}
 			}
 			login.init();

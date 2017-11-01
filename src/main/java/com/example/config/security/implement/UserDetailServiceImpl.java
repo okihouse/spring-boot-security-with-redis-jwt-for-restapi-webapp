@@ -16,7 +16,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
 		boolean exist = true; // TODO: Find user in your database by username.
 		if(!exist){
             throw new UsernameNotFoundException("User is not exist!");
