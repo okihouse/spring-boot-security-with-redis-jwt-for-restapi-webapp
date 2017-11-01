@@ -16,14 +16,17 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		if(username == null){
-            throw new UsernameNotFoundException("Username is not exist!");
+
+		boolean exist = true; // TODO: Find user in your database by username.
+		if(!exist){
+            throw new UsernameNotFoundException("User is not exist!");
         }
 
 		List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("USER")); // TODO: update grant
+        authorities.add(new SimpleGrantedAuthority("USER")); // TODO: Get grant type in your database by username.
 
-		UserDetails userDetails = new User(username, "1234", authorities); // TODO: update password
+        String password = "password"; // TODO: Get password in your database by username.
+		UserDetails userDetails = new User(username, password, authorities);
 		return userDetails;
 	}
 
