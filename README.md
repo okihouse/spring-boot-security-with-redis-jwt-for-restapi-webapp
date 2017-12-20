@@ -11,14 +11,14 @@ Especially, it is more difficult for issues such as user sessions handling.
 This project has implemented Remember-Me implementation provided by Spring Security.
 (Both with form login and ajax login)
 
-Also used `Redis` to implement custom persist token management.
+Also used `Redis` to implement custom persist token and session management.
 
 The interesting thing is that even if you restart the `WAS(like as tomcat)`,
 the user information is saved and is not affected by the login.
 
 스프링 부트 + 스프링 시큐리티로 구현한 Form 로그인 및 Ajax 로그인 입니다.
 
-이 예제의 특이한 점은 스프링 시큐리티가 제공하는 remember-me 를 구현하였으며,
+이 예제의 특이한 점은 스프링 시큐리티가 제공하는 remember-me and session 관리부분을 `Redis`로 구현하였으며,
 
 해당 기능으로 tomcat과 같은 was가 재기동(재시작) 해도 로그인 정보가 유지된다는 점입니다
 
