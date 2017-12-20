@@ -25,7 +25,10 @@ public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationPro
 
 	private static Logger logger = LoggerFactory.getLogger(SecurityUserLoginProcessingFilter.class);
 
-    public SecurityUserLoginProcessingFilter(String defaultProcessUrl, SecurityUserLoginHandler securityLoginHandler, PersistentTokenBasedRememberMeServices rememberMeServices) {
+    public SecurityUserLoginProcessingFilter(
+    		String defaultProcessUrl
+    		, SecurityUserLoginHandler securityLoginHandler
+    		, PersistentTokenBasedRememberMeServices rememberMeServices) {
         super(defaultProcessUrl);
         this.securityLoginHandler = securityLoginHandler;
         this.rememberMeServices = rememberMeServices;
@@ -34,7 +37,7 @@ public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationPro
     private SecurityUserLoginHandler securityLoginHandler;
 
     private PersistentTokenBasedRememberMeServices rememberMeServices;
-
+    
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
@@ -46,10 +49,11 @@ public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationPro
         }
 
         String username = request.getParameter("username");
-        if (StringUtils.isBlank(username)) {
-            throw new AuthenticationServiceException("Username(ID) is not valid.");
+        String password = "password"; // TODO: Please use your user input password.
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            throw new AuthenticationServiceException("username or password is not valid.");
         }
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
     }
 

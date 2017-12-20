@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
-
+public class UserDetailsServiceImpl implements UserDetailsService {
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		boolean exist = true; // TODO: Find user in your database by username.
@@ -22,9 +22,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
 		List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("USER")); // TODO: Get grant type in your database by username.
-
-        String password = "password"; // TODO: Get password in your database by username.
+        authorities.add(new SimpleGrantedAuthority("USER")); // TODO: Use the permissions of the user saved in database.
+        String password = "$2a$11$BMHAHEws4Sz/SL5hhfLR/e45nehO.3RgV7j0v9mGaB9sYvEVHJb.e"; // TODO: Use the password of the user saved in database.
 		UserDetails userDetails = new User(username, password, authorities);
 		return userDetails;
 	}

@@ -1,6 +1,7 @@
 package com.example.config.security.handler;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +59,8 @@ public class SecurityUserLoginHandler implements AuthenticationSuccessHandler, A
 	        response.getWriter().write(JsonUtils.toJson(map));
 	        response.getWriter().flush();
 		} else {
-			response.sendRedirect(urlInformation.getLogin());
+			String query = String.format("?error=", URLEncoder.encode(exception.getMessage(), "utf-8"));
+			response.sendRedirect(urlInformation.getLogin() + query);
 		}
 	}
 
@@ -74,7 +76,8 @@ public class SecurityUserLoginHandler implements AuthenticationSuccessHandler, A
 	        response.getWriter().write(JsonUtils.toJson(map));
 	        response.getWriter().flush();
 		} else {
-			response.sendRedirect(urlInformation.getLogin());
+			String query = String.format("?error=", URLEncoder.encode(accessDeniedException.getMessage(), "utf-8"));
+			response.sendRedirect(urlInformation.getLogin() + query);
 		}
 	}
 

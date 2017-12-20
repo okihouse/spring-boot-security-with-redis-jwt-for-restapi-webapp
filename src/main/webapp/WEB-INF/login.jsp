@@ -1,6 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<sec:authentication property="principal" var="principal" />
 <sec:authorize var="isLogin" access="isAuthenticated()" />
 
 <!DOCTYPE html>
@@ -9,7 +8,6 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="isLogin" content="${isLogin}">
 	<title>Login</title>
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -170,8 +168,13 @@
 			'use strict';
 			var login = {
 				init: function(){
-					var isLogin = $("meta[name='isLogin']").attr("content");
-					if(isLogin == 'true') {
+					var errorMessage = "${param.error}";
+					if(errorMessage) {
+						alert(errorMessage);
+					}
+					
+					var isLogin = ${isLogin};
+					if(isLogin) {
 						alert('You are already logged in, move to mypage...');
 						location.href = '/mypage';
 						return;

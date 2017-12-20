@@ -5,10 +5,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -17,8 +19,6 @@ import com.example.config.security.filter.SecurityUserLoginProcessingFilter;
 import com.example.config.security.handler.SecurityUserAccessHandler;
 import com.example.config.security.handler.SecurityUserLoginHandler;
 import com.example.config.security.handler.SecurityUserLogoutHandler;
-import com.example.config.security.implement.UserDetailServiceImpl;
-import com.example.config.security.provider.SecurityUserAuthenticationProvider;
 import com.example.config.security.repository.PersistTokenRepository;
 import com.example.config.security.url.SecurityUrlInformation;
 
@@ -38,9 +38,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 
 	@Autowired private PersistTokenRepository persistenceTokenRepository;
 
-	@Autowired private UserDetailServiceImpl userDetailService;
-
-	@Autowired private SecurityUserAuthenticationProvider securityUserAuthenticationProvider;
+	@Autowired private UserDetailsService userDetailsService;
 
 	@Autowired private SecurityUrlInformation urlInformation;
 
@@ -77,7 +75,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	@Bean
 	public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
 	    PersistentTokenBasedRememberMeServices persistenceTokenBasedservice =
-	    		new PersistentTokenBasedRememberMeServices(rememberKey, userDetailService, persistenceTokenRepository);
+	    		new PersistentTokenBasedRememberMeServices(rememberKey, userDetailsService, persistenceTokenRepository);
 	    return persistenceTokenBasedservice;
 	}
 
@@ -90,9 +88,9 @@ public class Security extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(securityUserAuthenticationProvider);
-    }
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder(11);
+	}
 
 }
