@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import com.example.config.security.filter.SecurityUserLoginProcessingFilter;
 import com.example.config.security.handler.SecurityUserAccessHandler;
@@ -23,6 +24,7 @@ import com.example.config.security.url.SecurityUrlInformation;
 
 @Configuration
 @EnableWebSecurity
+@EnableRedisHttpSession
 @EnableAutoConfiguration
 public class Security extends WebSecurityConfigurerAdapter {
 
@@ -47,6 +49,8 @@ public class Security extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable();
+		
+		httpSecurity.sessionManagement();
 
 		httpSecurity.authorizeRequests()
 						.antMatchers(urlInformation.getLogin(), urlInformation.getLogout()).permitAll()
