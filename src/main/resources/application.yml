@@ -1,4 +1,3 @@
----
 logging:
   config: classpath:logback.xml
 
@@ -7,7 +6,11 @@ server:
   context-path: /
   error:
     whitelabel:
-      enabled: false    
+      enabled: true
+  session:
+    cookie:
+      http-only: true
+    tracking-modes: cookie
       
 spring:
   mvc:
@@ -17,9 +20,33 @@ spring:
   redis:
     host: localhost
     port: 6379
-    
+
+  jpa:
+    database: h2
+    hibernate:
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      ddl-auto: create
+    generate-ddl: true
+    properties:
+      hibernate.format_sql: true
+    show-sql: true
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    data: "classpath:user.sql"
+
 security:
   url: 
     login: /login
     logout: /logout
     mypage: /mypage
+    accessdenied: /error/accessdenied
+    refreshToken: /refreshToken
+  token:
+    issuer: security
+    expired: 1
+    refreshExpired: 60
+    signing-key: securityKey
