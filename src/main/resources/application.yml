@@ -44,7 +44,7 @@ security:
     logout: /logout
     mypage: /mypage
     accessdenied: /error/accessdenied
-    refreshToken: /refreshToken
+    refreshToken: /api/token
   token:
     issuer: security
     expired: 1
