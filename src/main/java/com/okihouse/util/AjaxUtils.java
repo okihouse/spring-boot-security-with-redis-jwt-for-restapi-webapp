@@ -13,7 +13,7 @@ public class AjaxUtils {
 	}
 
 	public static boolean isApi(HttpServletRequest request) {
-		String accept = request.getHeader("Content-Type");
+		String accept = request.getHeader("accept");
         String ajax = request.getHeader("X-Requested-With");
         return (StringUtils.indexOf(accept, "json") > -1 && StringUtils.isEmpty(ajax));
 	}
