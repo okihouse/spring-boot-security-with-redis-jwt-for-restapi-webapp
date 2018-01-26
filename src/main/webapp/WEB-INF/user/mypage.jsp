@@ -46,8 +46,8 @@
 		</div>
 
 		<div class="text-center">
-			<a class="btn btn-default btn-logout" href="/login" role="button">Move To login page(for test)</a>
-			<a class="btn btn-default btn-logout" href="/admin" role="button">Move To admin page</a>
+			<a class="btn btn-default btn-logout" href="/login" role="button">Move to login page(for test)</a>
+			<a class="btn btn-default btn-logout" href="/admin" role="button">Move to admin page</a>
 			<a class="btn btn-default btn-logout" href="/logout" role="button">LOGOUT</a>
 		</div>
 	</div>
