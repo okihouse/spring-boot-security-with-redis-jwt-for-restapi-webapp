@@ -43,7 +43,7 @@
 		</div>
 
 		<div class="text-center">
-			<a class="btn btn-default btn-logout" href="/mypage" role="button">Move To mypage</a>
+			<a class="btn btn-default btn-logout" href="/mypage" role="button">Move to mypage</a>
 			<a class="btn btn-default btn-logout" href="/logout" role="button">LOGOUT</a>
 		</div>
 	</div>
