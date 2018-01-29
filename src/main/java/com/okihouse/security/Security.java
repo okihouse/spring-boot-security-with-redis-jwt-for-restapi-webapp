@@ -1,9 +1,17 @@
 package com.okihouse.security;
 
-import java.util.Arrays;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.okihouse.repository.RolePermissionRepository;
+import com.okihouse.repository.UserRepository;
+import com.okihouse.security.api.filter.ApiTokenAuthenticationProcessingFilter;
+import com.okihouse.security.api.token.ApiTokenFactory;
+import com.okihouse.security.common.data.SecurityUrlData;
+import com.okihouse.security.common.entrypoint.SecurityUserAccessEntryPoint;
+import com.okihouse.security.common.filter.SecurityUserLoginProcessingFilter;
+import com.okihouse.security.common.handler.SecurityUserAcessDeniedHandler;
+import com.okihouse.security.common.handler.SecurityUserLoginHandler;
+import com.okihouse.security.common.provider.SecurityAuthenticationProvider;
+import com.okihouse.security.common.repository.PersistTokenRepository;
+import com.okihouse.security.web.handler.WebSecurityUserLogoutHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -24,17 +32,8 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
-import com.okihouse.repository.UserRepository;
-import com.okihouse.security.api.filter.ApiTokenAuthenticationProcessingFilter;
-import com.okihouse.security.api.token.ApiTokenFactory;
-import com.okihouse.security.common.data.SecurityUrlData;
-import com.okihouse.security.common.entrypoint.SecurityUserAccessEntryPoint;
-import com.okihouse.security.common.filter.SecurityUserLoginProcessingFilter;
-import com.okihouse.security.common.handler.SecurityUserAcessDeniedHandler;
-import com.okihouse.security.common.handler.SecurityUserLoginHandler;
-import com.okihouse.security.common.provider.SecurityAuthenticationProvider;
-import com.okihouse.security.common.repository.PersistTokenRepository;
-import com.okihouse.security.web.handler.WebSecurityUserLogoutHandler;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -63,13 +62,16 @@ public class Security extends WebSecurityConfigurerAdapter {
 
     @Autowired private UserRepository userRepository;
 
+    @Autowired private RolePermissionRepository rolePermissionRepository;
+
 	@Autowired private SecurityUrlData securityUrlData;
 
 	private final String rememberKey = "remember-me";
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable();
+		httpSecurity.csrf()
+                    .ignoringAntMatchers("/api/*");
 		
 		httpSecurity.sessionManagement();
         httpSecurity.authorizeRequests()
@@ -81,7 +83,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 						.anyRequest().authenticated()
 						.and()
 					.logout()
-						.logoutUrl(securityUrlData.getLogout())
+                        .logoutRequestMatcher(new AntPathRequestMatcher(securityUrlData.getLogout()))
 						.deleteCookies("JSESSIONID", rememberKey)
 						.logoutSuccessHandler(webSecurityUserLogoutHandler)
 						.and()
@@ -138,6 +140,7 @@ public class Security extends WebSecurityConfigurerAdapter {
         ApiTokenAuthenticationProcessingFilter filter = new ApiTokenAuthenticationProcessingFilter(
                 skipMatcher
                 ,userRepository
+                ,rolePermissionRepository
                 ,securityUserLoginHandler
                 ,apiTokenFactory);
         filter.setAuthenticationManager(this.authenticationManager);
