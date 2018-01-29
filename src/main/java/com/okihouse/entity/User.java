@@ -26,7 +26,8 @@ public class User {
     private String password;
     
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER ,cascade = CascadeType.PERSIST)
-    private List<UserRole> userRoles;
+    private List<Role> roles;
+
 
     @Override
     public String toString() {

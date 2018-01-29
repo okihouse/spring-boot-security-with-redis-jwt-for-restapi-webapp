@@ -124,6 +124,7 @@
 			<form class="form-signin" role="form" id="login" method="POST" action="/loginProcess">
 				<input type="text" id="username" name="username" class="form-control" placeholder="Insert 'user' or 'admin'" required autofocus>
 				<input type="password" value="password" id="password" name="password" class="form-control" placeholder="PASSWORD" required>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				<div id="remember" class="checkbox">
 					<label> 
 						<input type="checkbox" id="remember-me" name="remember-me">

@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.okihouse.repository.RolePermissionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,7 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import com.okihouse.entity.User;
-import com.okihouse.entity.UserRole;
+import com.okihouse.entity.Role;
 import com.okihouse.repository.UserRepository;
 import com.okihouse.security.Security;
 import com.okihouse.security.api.token.ApiTokenFactory;
@@ -41,15 +43,19 @@ public class ApiTokenAuthenticationProcessingFilter extends AbstractAuthenticati
     public ApiTokenAuthenticationProcessingFilter(
             Security.SkipMatcher skipMatcher
             ,UserRepository userRepository
+            ,RolePermissionRepository rolePermissionRepository
             ,SecurityUserLoginHandler securityUserLoginHandler
             ,ApiTokenFactory apiTokenFactory) {
         super(skipMatcher);
         this.userRepository = userRepository;
+        this.rolePermissionRepository = rolePermissionRepository;
         this.securityUserLoginHandler = securityUserLoginHandler;
         this.apiTokenFactory = apiTokenFactory;
     }
 
     private UserRepository userRepository;
+
+    private RolePermissionRepository rolePermissionRepository;
 
     private SecurityUserLoginHandler securityUserLoginHandler;
 
@@ -71,14 +77,20 @@ public class ApiTokenAuthenticationProcessingFilter extends AbstractAuthenticati
         }
 
         // Use the authorities of the user saved in database.
-        List<UserRole> userRoles = user.getUserRoles();
-        if (userRoles.isEmpty()) {
+        List<Role> roles = user.getRoles();
+        if (roles.isEmpty()) {
             throw new BadCredentialsException("Authentication Failed. User granted authority is empty.");
         }
 
+        List<Long> roleIds = roles.stream()
+                .map(Role::getId)
+                .collect(Collectors.toList());
+
+        List<String> permissions = rolePermissionRepository.permissions(roleIds);
+
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        userRoles.stream()
-                .forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r.getRole())));
+        permissions.stream()
+                .forEach(p -> grantedAuthorities.add(new SimpleGrantedAuthority(p)));
 
         logger.info("Api user attempt authentication. username={}, grantedAuthorities={}", principal, grantedAuthorities);
         return new UsernamePasswordAuthenticationToken(principal, null, grantedAuthorities); // No required credentials.

@@ -28,7 +28,7 @@ public class SecurityUserAccessEntryPoint implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException {
-        if(AjaxUtils.isAjax(request) || AjaxUtils.isApi(request)) { // TODO: Updated api request header
+        if(AjaxUtils.isAjax(request) || AjaxUtils.isApi(request)) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("success", false);
 			map.put("redirect", urlInformation.getLogin());

@@ -1,7 +1,8 @@
 package com.okihouse.security.common.provider;
 
+import com.okihouse.entity.Role;
 import com.okihouse.entity.User;
-import com.okihouse.entity.UserRole;
+import com.okihouse.repository.RolePermissionRepository;
 import com.okihouse.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by okihouse16 on 2017. 12. 21..
@@ -31,6 +33,9 @@ public class SecurityAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RolePermissionRepository rolePermissionRepository;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -63,14 +68,20 @@ public class SecurityAuthenticationProvider implements AuthenticationProvider {
         }
 
         // Use the authorities of the user saved in database.
-        List<UserRole> userRoles = user.getUserRoles();
-        if (userRoles.isEmpty()) {
+        List<Role> roles = user.getRoles();
+        if (roles.isEmpty()) {
             throw new BadCredentialsException("Authentication Failed. User granted authority is empty.");
         }
 
+        List<Long> roleIds = roles.stream()
+                                  .map(Role::getId)
+                                  .collect(Collectors.toList());
+
+        List<String> permissions = rolePermissionRepository.permissions(roleIds);
+
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        userRoles.stream()
-                 .forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r.getRole())));
+        permissions.stream()
+                   .forEach(p -> grantedAuthorities.add(new SimpleGrantedAuthority(p)));
 
         return new UsernamePasswordAuthenticationToken(username, password, grantedAuthorities);
     }

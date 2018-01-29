@@ -1,5 +1,10 @@
 package com.okihouse.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.Cookie;
+
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -7,10 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.http.Cookie;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class UserController {
@@ -21,11 +22,11 @@ public class UserController {
     }
 
     @RequestMapping(value = {"/error/accessdenied"}, method = RequestMethod.GET)
-    public String accessdenied() {
+    public String accessDenied() {
         return "error/accessdenied";
     }
 
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    @PreAuthorize("hasAuthority('READ_MYPAGE')")
     @RequestMapping(value = "/mypage", method = RequestMethod.GET)
     public String mypage(Model model, HttpServletRequest request, Authentication authentication) {
         List<String> cookies = new ArrayList<>();
@@ -42,7 +43,7 @@ public class UserController {
         return "user/mypage";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('READ_ADMIN')")
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public String admin(Model model, Authentication authentication) {
         model.addAttribute("authentication", authentication);

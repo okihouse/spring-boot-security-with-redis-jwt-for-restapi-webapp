@@ -28,7 +28,8 @@ public class SecurityUserAcessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        if (AjaxUtils.isAjax(request) || AjaxUtils.isApi(request)) {
+        accessDeniedException.printStackTrace();
+    	if (AjaxUtils.isAjax(request) || AjaxUtils.isApi(request)) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);
             map.put("error", accessDeniedException.getMessage());
