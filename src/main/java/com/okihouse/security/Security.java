@@ -71,7 +71,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf()
-                    .ignoringAntMatchers("/api/*");
+                    .ignoringAntMatchers("/api/*"); // Api use token authentication.
 		
 		httpSecurity.sessionManagement();
         httpSecurity.authorizeRequests()

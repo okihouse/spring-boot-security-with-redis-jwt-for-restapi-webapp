@@ -55,7 +55,6 @@ public class SecurityUserLoginHandler implements AuthenticationSuccessHandler, A
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-    	exception.printStackTrace();
     	if (AjaxUtils.isAjax(request) || AjaxUtils.isApi(request)) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);

@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserApiController {
 
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('READ_MYPAGE')")
     @RequestMapping(value = "/api/mypage", method = RequestMethod.GET)
     @ResponseBody
     public UsernamePasswordAuthenticationToken mypage(UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
         return usernamePasswordAuthenticationToken;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('READ_ADMIN')")
     @RequestMapping(value = "/api/admin", method = RequestMethod.GET)
     @ResponseBody
     public UsernamePasswordAuthenticationToken admin(UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {

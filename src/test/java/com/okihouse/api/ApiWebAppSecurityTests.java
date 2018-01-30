@@ -54,13 +54,17 @@ public class ApiWebAppSecurityTests {
                             new UsernamePasswordAuthenticationToken(
                                 "user",
                                 "password",
-                                Arrays.asList(new SimpleGrantedAuthority("USER"))));
+                                Arrays.asList(new SimpleGrantedAuthority("READ_MYPAGE"))));
 
         adminAccessToken = apiTokenFactory.createToken(
                             new UsernamePasswordAuthenticationToken(
                                 "admin",
                                 "password",
-                                Arrays.asList(new SimpleGrantedAuthority("ADMIN"))));
+                                Arrays.asList(
+                                    new SimpleGrantedAuthority("READ_MYPAGE"),
+                                    new SimpleGrantedAuthority("READ_ADMIN")
+                                )
+                            ));
     }
 
 	@Test
@@ -68,7 +72,7 @@ public class ApiWebAppSecurityTests {
         mvc
             .perform(get("/api/mypage")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + userAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().is2xxSuccessful());
 	}
@@ -78,7 +82,7 @@ public class ApiWebAppSecurityTests {
         mvc
             .perform(get("/api/admin")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + userAccessToken)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
 	}
@@ -88,7 +92,7 @@ public class ApiWebAppSecurityTests {
         mvc
             .perform(get("/api/mypage")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().is2xxSuccessful());
 	}
@@ -97,7 +101,7 @@ public class ApiWebAppSecurityTests {
         mvc
             .perform(get("/api/admin")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().is2xxSuccessful());
 	}
