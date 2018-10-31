@@ -43,47 +43,46 @@ import java.util.Arrays;
 public class Security extends WebSecurityConfigurerAdapter {
 
 	@Autowired private AuthenticationManager authenticationManager;
-
-    @Autowired private SecurityUserLoginHandler securityUserLoginHandler;
-
-    @Autowired private SecurityUserAcessDeniedHandler securityUserAcessDeniedHandler;
-
+	
+	@Autowired private SecurityUserLoginHandler securityUserLoginHandler;
+	
+	@Autowired private SecurityUserAcessDeniedHandler securityUserAcessDeniedHandler;
+	
 	@Autowired private SecurityUserAccessEntryPoint securityUserAccessEntryPoint;
-
-    @Autowired private WebSecurityUserLogoutHandler webSecurityUserLogoutHandler;
-
+	
+	@Autowired private WebSecurityUserLogoutHandler webSecurityUserLogoutHandler;
+	
 	@Autowired private PersistTokenRepository persistenceTokenRepository;
-
+	
 	@Autowired private UserDetailsService userDetailsService;
-
-    @Autowired private SecurityAuthenticationProvider securityAuthenticationProvider;
-
-    @Autowired private ApiTokenFactory apiTokenFactory;
-
-    @Autowired private UserRepository userRepository;
-
-    @Autowired private RolePermissionRepository rolePermissionRepository;
-
+	
+	@Autowired private SecurityAuthenticationProvider securityAuthenticationProvider;
+	
+	@Autowired private ApiTokenFactory apiTokenFactory;
+	
+	@Autowired private UserRepository userRepository;
+	
+	@Autowired private RolePermissionRepository rolePermissionRepository;
+	
 	@Autowired private SecurityUrlData securityUrlData;
-
+	
 	private final String rememberKey = "remember-me";
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf()
-                    .ignoringAntMatchers("/api/*"); // Api use token authentication.
-		
+		httpSecurity.csrf().ignoringAntMatchers("/api/*"); // Api use token authentication.
+
 		httpSecurity.sessionManagement();
-        httpSecurity.authorizeRequests()
-						.antMatchers(
-                            securityUrlData.getLogin()
-                            , securityUrlData.getLogout()
-                            , securityUrlData.getRefreshToken()
-                        ).permitAll()
-						.anyRequest().authenticated()
-						.and()
+		httpSecurity.authorizeRequests()
+					.antMatchers(
+					    securityUrlData.getLogin()
+					    , securityUrlData.getLogout()
+					    , securityUrlData.getRefreshToken()
+					).permitAll()
+					.anyRequest().authenticated()
+					.and()
 					.logout()
-                        .logoutRequestMatcher(new AntPathRequestMatcher(securityUrlData.getLogout()))
+					    .logoutRequestMatcher(new AntPathRequestMatcher(securityUrlData.getLogout()))
 						.deleteCookies("JSESSIONID", rememberKey)
 						.logoutSuccessHandler(webSecurityUserLogoutHandler)
 						.and()
@@ -110,67 +109,53 @@ public class Security extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
-	    PersistentTokenBasedRememberMeServices persistenceTokenBasedservice =
-	    		new PersistentTokenBasedRememberMeServices(
-                        rememberKey
-                        ,userDetailsService
-                        ,persistenceTokenRepository);
-	    return persistenceTokenBasedservice;
+		PersistentTokenBasedRememberMeServices persistenceTokenBasedservice = new PersistentTokenBasedRememberMeServices(
+				rememberKey, userDetailsService, persistenceTokenRepository);
+		return persistenceTokenBasedservice;
 	}
 
 	protected SecurityUserLoginProcessingFilter buildWebSecurityUserLoginProcessingFilter() throws Exception {
-        SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter(
-                "/loginProcess"
-                ,securityUserLoginHandler
-                ,persistentTokenBasedRememberMeServices());
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
-    }
+		SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter("/loginProcess",
+				securityUserLoginHandler, persistentTokenBasedRememberMeServices());
+		filter.setAuthenticationManager(authenticationManager);
+		return filter;
+	}
 
-    protected SecurityUserLoginProcessingFilter buildApiSecurityUserLoginProcessingFilter() throws Exception {
-        SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter(
-                "/api/login"
-                ,securityUserLoginHandler);
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
-    }
+	protected SecurityUserLoginProcessingFilter buildApiSecurityUserLoginProcessingFilter() throws Exception {
+		SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter("/api/login",
+				securityUserLoginHandler);
+		filter.setAuthenticationManager(authenticationManager);
+		return filter;
+	}
 
-    protected ApiTokenAuthenticationProcessingFilter buildApiTokenAuthenticationProcessingFilter() throws Exception {
-        SkipMatcher skipMatcher = new SkipMatcher("/api/**");
-        ApiTokenAuthenticationProcessingFilter filter = new ApiTokenAuthenticationProcessingFilter(
-                skipMatcher
-                ,userRepository
-                ,rolePermissionRepository
-                ,securityUserLoginHandler
-                ,apiTokenFactory);
-        filter.setAuthenticationManager(this.authenticationManager);
-        return filter;
-    }
+	protected ApiTokenAuthenticationProcessingFilter buildApiTokenAuthenticationProcessingFilter() throws Exception {
+		SkipMatcher skipMatcher = new SkipMatcher("/api/**");
+		ApiTokenAuthenticationProcessingFilter filter = new ApiTokenAuthenticationProcessingFilter(skipMatcher,
+				userRepository, rolePermissionRepository, securityUserLoginHandler, apiTokenFactory);
+		filter.setAuthenticationManager(this.authenticationManager);
+		return filter;
+	}
 
-    public static class SkipMatcher implements RequestMatcher {
+	public static class SkipMatcher implements RequestMatcher {
 
-        private OrRequestMatcher skipRequestMatcher;
+		private OrRequestMatcher skipRequestMatcher;
 
-        private AntPathRequestMatcher antPathRequestMatcher;
+		private AntPathRequestMatcher antPathRequestMatcher;
 
-        public SkipMatcher(String processUrl) {
-            skipRequestMatcher = new OrRequestMatcher(
-                Arrays.asList(
-                    new AntPathRequestMatcher("/api/login"),
-                    new AntPathRequestMatcher("/api/token")
-                )
-            );
-            antPathRequestMatcher = new AntPathRequestMatcher(processUrl);
-        }
+		public SkipMatcher(String processUrl) {
+			skipRequestMatcher = new OrRequestMatcher(
+					Arrays.asList(new AntPathRequestMatcher("/api/login"), new AntPathRequestMatcher("/api/token")));
+			antPathRequestMatcher = new AntPathRequestMatcher(processUrl);
+		}
 
-        @Override
-        public boolean matches(HttpServletRequest request) {
-            if(skipRequestMatcher.matches(request)){
-                return false;
-            }
-            return antPathRequestMatcher.matches(request);
-        }
-    }
+		@Override
+		public boolean matches(HttpServletRequest request) {
+			if (skipRequestMatcher.matches(request)) {
+				return false;
+			}
+			return antPathRequestMatcher.matches(request);
+		}
+	}
 
 	@Bean
 	public PasswordEncoder encoder() {

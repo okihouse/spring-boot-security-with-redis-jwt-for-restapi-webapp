@@ -4,12 +4,14 @@ import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class RememberToken {
 
-	private final String username;
+	private String username;
 
 	private String series;
 

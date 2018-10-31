@@ -25,7 +25,7 @@ public class SpringSecurityApplication extends SpringBootServletInitializer {
             stringRedisTemplate.getConnectionFactory().getConnection();
         } catch (Exception e) {
             System.out.println("-------------------------------------------------------------------------------------------");
-            System.out.println("- Redis host and port is not availables. please check out application configuration file. -");
+            System.out.println("- Redis host and port is not availables. please check application configuration file. -");
             System.out.println("-------------------------------------------------------------------------------------------");
             System.exit(-1);
         }
