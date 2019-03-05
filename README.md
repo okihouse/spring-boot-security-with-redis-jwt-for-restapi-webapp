@@ -53,6 +53,7 @@ Requirements
 * Java 1.8
 * [Spring boot](http://projects.spring.io/spring-boot/) 1.2.8+ (spring-boot-starter-redis)
 * [Redis](http://redis.io/) 2.4+
+* lombok
 
 Watch Out!
 =====
